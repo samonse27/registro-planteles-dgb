@@ -185,7 +185,7 @@ export default function Home() {
 
   return (
     <main className="app-shell min-h-screen px-4 py-8 md:px-8">
-      <div className="mx-auto max-w-6xl">
+      <div className="app-content">
         <header className="brand-header">
           <div className="brand-mark"><Building2 size={25} /></div>
           <div><p className="eyebrow">Dirección General de Bachillerato</p><h1>Registro de planteles</h1></div>
