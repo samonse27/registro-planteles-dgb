@@ -8,13 +8,23 @@
 body { margin:0; background:var(--background); color:var(--foreground); font-family:"Segoe UI",Arial,sans-serif; }
 button,input,select { font:inherit; }
 .app-shell {
+  position:relative;
+  isolation:isolate;
   background-color:#5b1029;
-  background-image:url('/fondo-guinda.png');
-  background-position:top center;
-  background-size:100% 100%;
-  background-repeat:no-repeat;
-  background-attachment:scroll;
 }
+.app-shell::before {
+  content:"";
+  position:fixed;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+  background:#5b1029 url('/fondo-guinda.png') center/cover no-repeat;
+}
+.app-shell > * {
+  position:relative;
+  z-index:1;
+}
+.app-content { width:100%; max-width:72rem; margin-inline:auto; }
 .brand-header { display:flex; align-items:center; gap:16px; color:white; margin:0 auto 22px; }
 .brand-header h1 { font-size:clamp(1.7rem,4vw,2.4rem); font-weight:700; margin:2px 0 0; }
 .brand-mark { width:50px; height:50px; display:grid; place-items:center; border:1px solid rgba(255,255,255,.45); border-radius:15px; background:rgba(255,255,255,.13); backdrop-filter:blur(8px); }
