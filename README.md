@@ -20,3 +20,4 @@ Versión compatible con Next.js y Vercel del formulario de registro de planteles
 6. Para usar un dominio propio, abre **Settings → Domains** y agrega el dominio o subdominio.
 
 Nunca escribas la URL de Power Automate en archivos que se subirán a GitHub.
+Desplegado en Vercel.
