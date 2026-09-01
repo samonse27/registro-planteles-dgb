@@ -5,24 +5,15 @@
 :root { --background:#f8f3f4; --foreground:#35131f; --card:#fffafc; --card-foreground:#35131f; --primary:#9b2247; --primary-foreground:#fff; --secondary:#f5e8ec; --secondary-foreground:#6d1935; --muted:#f5e8ec; --muted-foreground:#765966; --accent:#a57f2c; --accent-foreground:#fff; --destructive:#b42318; --border:#e5cfd6; --input:#d9bdc6; --ring:#a57f2c; --radius:1rem; }
 @theme inline { --color-background:var(--background); --color-foreground:var(--foreground); --color-card:var(--card); --color-card-foreground:var(--card-foreground); --color-primary:var(--primary); --color-primary-foreground:var(--primary-foreground); --color-secondary:var(--secondary); --color-secondary-foreground:var(--secondary-foreground); --color-muted:var(--muted); --color-muted-foreground:var(--muted-foreground); --color-accent:var(--accent); --color-accent-foreground:var(--accent-foreground); --color-destructive:var(--destructive); --color-border:var(--border); --color-input:var(--input); --color-ring:var(--ring); --radius-sm:calc(var(--radius) - 6px); --radius-md:calc(var(--radius) - 3px); --radius-lg:var(--radius); --radius-xl:calc(var(--radius) + 6px); --font-sans:"Segoe UI",Arial,sans-serif; }
 * { box-sizing:border-box; }
-body { margin:0; background:var(--background); color:var(--foreground); font-family:"Segoe UI",Arial,sans-serif; }
+html,body {
+  min-height:100%;
+  background:#5b1029 url('/fondo-guinda.png') center/cover no-repeat fixed !important;
+}
+body { margin:0; color:var(--foreground); font-family:"Segoe UI",Arial,sans-serif; }
 button,input,select { font:inherit; }
 .app-shell {
   position:relative;
-  isolation:isolate;
-  background-color:#5b1029;
-}
-.app-shell::before {
-  content:"";
-  position:fixed;
-  inset:0;
-  z-index:0;
-  pointer-events:none;
-  background:#5b1029 url('/fondo-guinda.png') center/cover no-repeat;
-}
-.app-shell > * {
-  position:relative;
-  z-index:1;
+  background:transparent !important;
 }
 .app-content { width:100%; max-width:72rem; margin-inline:auto; }
 .brand-header { display:flex; align-items:center; gap:16px; color:white; margin:0 auto 22px; }
