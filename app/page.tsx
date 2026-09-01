@@ -174,6 +174,7 @@ export default function Home() {
 
   if (finalizado) return (
     <main className="app-shell flex min-h-screen items-center justify-center p-5">
+      <img className="page-background" src="/fondo-guinda.png" alt="" aria-hidden="true" />
       <section className="glass-card max-w-xl text-center">
         <div className="success-icon"><CheckCircle2 size={38} /></div>
         <p className="eyebrow">Registro concluido</p><h1>¡Muchas gracias!</h1>
@@ -185,6 +186,7 @@ export default function Home() {
 
   return (
     <main className="app-shell min-h-screen px-4 py-8 md:px-8">
+      <img className="page-background" src="/fondo-guinda.png" alt="" aria-hidden="true" />
       <div className="app-content">
         <header className="brand-header">
           <div className="brand-mark"><Building2 size={25} /></div>
