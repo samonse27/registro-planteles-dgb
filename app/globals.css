@@ -1,0 +1,92 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "../vendor/shadcn-tailwind-4.13.0.css";
+
+:root { --background:#f8f3f4; --foreground:#35131f; --card:#fffafc; --card-foreground:#35131f; --primary:#9b2247; --primary-foreground:#fff; --secondary:#f5e8ec; --secondary-foreground:#6d1935; --muted:#f5e8ec; --muted-foreground:#765966; --accent:#a57f2c; --accent-foreground:#fff; --destructive:#b42318; --border:#e5cfd6; --input:#d9bdc6; --ring:#a57f2c; --radius:1rem; }
+@theme inline { --color-background:var(--background); --color-foreground:var(--foreground); --color-card:var(--card); --color-card-foreground:var(--card-foreground); --color-primary:var(--primary); --color-primary-foreground:var(--primary-foreground); --color-secondary:var(--secondary); --color-secondary-foreground:var(--secondary-foreground); --color-muted:var(--muted); --color-muted-foreground:var(--muted-foreground); --color-accent:var(--accent); --color-accent-foreground:var(--accent-foreground); --color-destructive:var(--destructive); --color-border:var(--border); --color-input:var(--input); --color-ring:var(--ring); --radius-sm:calc(var(--radius) - 6px); --radius-md:calc(var(--radius) - 3px); --radius-lg:var(--radius); --radius-xl:calc(var(--radius) + 6px); --font-sans:"Segoe UI",Arial,sans-serif; }
+* { box-sizing:border-box; }
+body { margin:0; background:var(--background); color:var(--foreground); font-family:"Segoe UI",Arial,sans-serif; }
+button,input,select { font:inherit; }
+.app-shell { background:linear-gradient(90deg,rgba(73,8,29,.68),rgba(73,8,29,.28)),url('/fondo-guinda.png') center/cover fixed; }
+.brand-header { display:flex; align-items:center; gap:16px; color:white; margin:0 auto 22px; }
+.brand-header h1 { font-size:clamp(1.7rem,4vw,2.4rem); font-weight:700; margin:2px 0 0; }
+.brand-mark { width:50px; height:50px; display:grid; place-items:center; border:1px solid rgba(255,255,255,.45); border-radius:15px; background:rgba(255,255,255,.13); backdrop-filter:blur(8px); }
+.eyebrow { color:#a57f2c; font-size:.75rem; font-weight:800; letter-spacing:.12em; text-transform:uppercase; margin:0 0 7px; }
+.brand-header .eyebrow { color:#ead9aa; }
+.form-card,.glass-card { background:rgba(255,250,252,.96); border:1px solid rgba(255,255,255,.65); border-radius:26px; box-shadow:0 24px 70px rgba(35,0,12,.28); backdrop-filter:blur(14px); overflow:hidden; }
+.glass-card { padding:54px 45px; }
+.glass-card h1 { font-size:2.5rem; margin:7px 0; }
+.lead { color:#765966; font-size:1.08rem; line-height:1.7; }
+.success-icon { margin:0 auto 22px; width:72px; height:72px; display:grid; place-items:center; color:white; border-radius:50%; background:#9b2247; box-shadow:0 0 0 10px #f3dfe6; }
+.folio-box { margin-top:26px; padding:17px; border-radius:15px; background:#f5e8ec; color:#6d1935; }
+.steps { display:grid; grid-template-columns:repeat(4,1fr); background:#f8edf1; border-bottom:1px solid #ead7dd; padding:20px 28px; }
+.step { display:flex; align-items:center; justify-content:center; gap:9px; color:#957582; }
+.step span { width:28px; height:28px; border-radius:50%; display:grid; place-items:center; border:1px solid #d9bdc6; background:white; font-size:.76rem; font-weight:700; }
+.step small { font-weight:650; }
+.step.active { color:#9b2247; }
+.step.active span { background:#9b2247; border-color:#9b2247; color:white; box-shadow:0 0 0 5px #edd7df; }
+.step.done { color:#775865; }
+.step.done span { background:#a57f2c; border-color:#a57f2c; color:white; }
+.panel { padding:38px clamp(24px,5vw,58px) 28px; min-height:430px; }
+.narrow-panel { max-width:720px; margin:auto; }
+.panel h2 { margin:0 0 8px; font-size:clamp(1.5rem,3vw,2rem); }
+.section-copy { margin:0 0 28px; color:#765966; line-height:1.6; }
+label,.field-title { display:flex; flex-direction:column; gap:8px; color:#56303e; font-size:.9rem; font-weight:700; }
+label b { color:#9b2247; }
+input,select { width:100%; border:1px solid #d7b8c3; border-radius:11px; background:white; padding:12px 13px; color:#35131f; outline:none; transition:.2s; }
+input:focus,select:focus { border-color:#a57f2c; box-shadow:0 0 0 3px rgba(165,127,44,.16); }
+.narrow-panel label+label { margin-top:20px; }
+.two-columns,.field-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px; }
+.selection-summary { height:45px; display:flex; align-items:center; border-radius:11px; padding:0 14px; background:#f5e8ec; color:#9b2247; font-weight:800; }
+.selection-summary.empty { color:#765966; font-weight:650; }
+.municipality-toolbar { display:flex; align-items:center; justify-content:space-between; gap:14px; margin-top:23px; }
+.municipality-toolbar>span { color:#765966; font-size:.82rem; white-space:nowrap; }
+.municipality-search { display:flex; align-items:center; gap:8px; flex:1; max-width:430px; padding-left:12px; border:1px solid #d7b8c3; border-radius:11px; background:white; color:#9b2247; }
+.municipality-search input { border:0; box-shadow:none; padding-left:0; }
+.municipality-search input:focus { box-shadow:none; }
+.municipality-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; margin-top:23px; max-height:305px; overflow:auto; padding:3px; }
+.municipality-toolbar+.municipality-grid { margin-top:12px; }
+.municipality-grid button { display:flex; align-items:center; gap:9px; text-align:left; border:1px solid #e1c9d1; background:white; padding:11px; border-radius:10px; color:#56303e; cursor:pointer; }
+.municipality-grid button.selected { border-color:#9b2247; background:#f8e9ee; color:#821c3e; font-weight:700; }
+.check-box { width:19px; height:19px; flex:0 0 19px; display:grid; place-items:center; border:1px solid #caa9b5; border-radius:5px; }
+.selected .check-box { background:#9b2247; color:white; border-color:#9b2247; }
+.selected-municipalities { display:flex; align-items:center; flex-wrap:wrap; gap:7px; margin-top:15px; }
+.selected-municipalities>span { color:#765966; font-size:.82rem; font-weight:700; margin-right:3px; }
+.selected-municipalities button { display:flex; align-items:center; gap:6px; border:1px solid #d8b6c2; border-radius:999px; background:#f7e8ed; color:#781b3a; padding:6px 9px 6px 11px; font-size:.8rem; font-weight:700; cursor:pointer; }
+.municipality-tabs { display:flex; gap:8px; overflow:auto; padding:2px 2px 12px; margin-bottom:13px; }
+.municipality-tabs button { border:1px solid #dfc6cf; border-radius:999px; background:white; color:#684354; padding:9px 13px; display:flex; align-items:center; gap:7px; white-space:nowrap; cursor:pointer; }
+.municipality-tabs button.active { background:#9b2247; color:white; border-color:#9b2247; }
+.municipality-tabs small { border-radius:999px; background:rgba(255,255,255,.22); padding:1px 6px; }
+.municipality-progress { width:max-content; margin:-10px 0 18px; border-radius:999px; background:#f5e8ec; color:#7b193b; padding:7px 11px; font-size:.82rem; font-weight:800; }
+.plant-card { border:1px solid #e5cfd6; border-radius:17px; background:#fff; padding:22px; margin-top:14px; box-shadow:0 8px 25px rgba(77,20,40,.06); }
+.plant-card-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:19px; }
+.plant-card h3 { margin:0; font-size:1.1rem; color:#6d1935; }
+.icon-danger { border:0; background:#fff0f0; color:#b42318; border-radius:9px; padding:8px; cursor:pointer; }
+.field-grid .wide { grid-column:1/-1; }
+.switch-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:20px; }
+.boolean-field { min-width:0; margin:0; border:1px solid #e5cfd6; border-radius:12px; padding:10px 12px 12px; }
+.boolean-field legend { padding:0 4px; color:#56303e; font-size:.9rem; font-weight:700; }
+.boolean-field legend b { color:#9b2247; }
+.yes-no-options { display:grid; grid-template-columns:1fr 1fr; gap:7px; }
+.yes-no-options button { border:1px solid #d7b8c3; border-radius:9px; background:white; color:#684354; padding:8px; font-weight:700; cursor:pointer; }
+.yes-no-options button.selected { border-color:#9b2247; background:#9b2247; color:white; }
+.yes-no-options button:focus-visible { outline:3px solid rgba(165,127,44,.28); outline-offset:2px; }
+.add-button { margin-top:17px; border:1px dashed #a57f2c; background:#fffaf0; color:#806019; padding:11px 15px; border-radius:11px; display:flex; gap:7px; align-items:center; font-weight:700; cursor:pointer; }
+.review-contact { display:flex; flex-wrap:wrap; gap:10px 22px; padding:17px 19px; border-radius:14px; background:#f7ebef; margin-bottom:16px; }
+.review-contact strong { color:#7b193b; }
+.review-contact span { color:#765966; }
+.review-list { display:grid; gap:9px; }
+.review-list article { display:flex; justify-content:space-between; align-items:center; padding:15px 18px; border:1px solid #e5cfd6; border-radius:12px; background:white; }
+.review-list article div { display:flex; align-items:center; gap:9px; color:#7b193b; }
+.review-list article span { color:#765966; }
+.review-total { margin-top:18px; display:flex; justify-content:flex-end; gap:10px; color:#765966; }
+.review-total strong { color:#9b2247; font-size:1.2rem; }
+.form-actions { display:flex; align-items:center; gap:12px; padding:20px clamp(24px,5vw,58px); border-top:1px solid #ead7dd; background:#fffafc; }
+.spacer { flex:1; }
+.primary-button,.secondary-button { min-height:44px; display:flex; align-items:center; justify-content:center; gap:8px; border-radius:11px; padding:10px 18px; font-weight:750; cursor:pointer; }
+.primary-button { border:0; background:#9b2247; color:white; box-shadow:0 7px 18px rgba(155,34,71,.22); }
+.primary-button:hover { background:#821c3e; }
+.primary-button:disabled { opacity:.6; cursor:wait; }
+.secondary-button { border:1px solid #d6b7c2; background:white; color:#6d1935; }
+.error-message { margin:0 clamp(24px,5vw,58px) 12px; border-radius:10px; padding:11px 14px; color:#8f1915; background:#fff0ef; border:1px solid #f3c1bd; }
+@media(max-width:760px){ .steps{padding:16px 8px}.step{gap:0}.step small{display:none}.two-columns,.field-grid{grid-template-columns:1fr}.field-grid .wide{grid-column:auto}.municipality-toolbar{align-items:stretch;flex-direction:column}.municipality-toolbar>span{white-space:normal}.municipality-search{max-width:none}.municipality-grid{grid-template-columns:1fr}.switch-grid{grid-template-columns:repeat(2,1fr)}.panel{padding:29px 20px 22px}.form-actions{padding:16px 20px}.primary-button,.secondary-button{flex:1}.spacer{display:none} }
