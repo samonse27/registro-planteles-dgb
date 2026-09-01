@@ -1,14 +1,14 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { ArrowLeft, ArrowRight, Building2, Check, CheckCircle2, MapPin, Plus, Search, Send, Trash2, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, CheckCircle2, MapPin, Plus, Search, Send, Trash2, X } from "lucide-react";
 import { ESTADOS, MUNICIPIOS_POR_ESTADO } from "@/lib/catalogos";
 
 type Plantel = {
   id: string; nombre: string; direccion: string; latitud: string; longitud: string;
   linkGoogleMaps: string; aulasDidacticas: string; capacidadPorAula: string;
-  computadoras: string; codigoPostal: string; capacidadMaximaPlantel: string;
-  capacidadInstalada: string; banos: boolean | null; espacioAdministrativo: boolean | null;
+  computadoras: string; codigoPostal: string; capacidadInstalada: string;
+  banos: boolean | null; espacioAdministrativo: boolean | null;
   agua: boolean | null; luz: boolean | null; internet: boolean | null;
   drenaje: boolean | null; equipoComputo: boolean | null; laboratorio: boolean | null;
   movilidad: string; horario: string;
@@ -17,7 +17,7 @@ type Plantel = {
 const nuevoPlantel = (): Plantel => ({
   id: crypto.randomUUID(), nombre: "", direccion: "", latitud: "", longitud: "",
   linkGoogleMaps: "", aulasDidacticas: "", capacidadPorAula: "", computadoras: "",
-  codigoPostal: "", capacidadMaximaPlantel: "", capacidadInstalada: "",
+  codigoPostal: "", capacidadInstalada: "",
   banos: null, espacioAdministrativo: null,
   agua: null, luz: null, internet: null, drenaje: null, equipoComputo: null,
   laboratorio: null, movilidad: "", horario: "",
@@ -79,8 +79,8 @@ export default function Home() {
   const plantelCompleto = (plantel: Plantel) => Boolean(
     plantel.nombre.trim() && plantel.direccion.trim() && plantel.latitud.trim() &&
     plantel.longitud.trim() && /^[0-9]{5}$/.test(plantel.codigoPostal) &&
-    plantel.linkGoogleMaps.trim() && plantel.capacidadMaximaPlantel !== "" &&
-    plantel.capacidadInstalada !== "" && plantel.aulasDidacticas !== "" &&
+    plantel.linkGoogleMaps.trim() && plantel.capacidadInstalada !== "" &&
+    plantel.aulasDidacticas !== "" &&
     plantel.capacidadPorAula !== "" && plantel.computadoras !== "" &&
     plantel.movilidad.trim() && plantel.horario.trim() &&
     plantel.agua !== null && plantel.luz !== null && plantel.internet !== null &&
@@ -146,10 +146,9 @@ export default function Home() {
               longitud: plantel.longitud,
               codigoPostal: plantel.codigoPostal,
               linkGoogleMaps: plantel.linkGoogleMaps,
-              capacidadMaximaPlantel: Number(plantel.capacidadMaximaPlantel),
-              capacidadInstalada: Number(plantel.capacidadInstalada),
               aulasDidacticas: Number(plantel.aulasDidacticas),
               capacidadPorAula: Number(plantel.capacidadPorAula),
+              capacidadInstalada: Number(plantel.capacidadInstalada),
               computadoras: Number(plantel.computadoras),
               agua: plantel.agua,
               luz: plantel.luz,
@@ -173,8 +172,7 @@ export default function Home() {
   };
 
   if (finalizado) return (
-    <main className="app-shell screen-pattern flex min-h-screen items-center justify-center p-5">
-      <style>{`.screen-pattern{background:#5b1029 url('/fondo-guinda.png') center/cover no-repeat fixed !important;}`}</style>
+    <main className="app-shell flex min-h-screen items-center justify-center p-5">
       <section className="glass-card max-w-xl text-center">
         <div className="success-icon"><CheckCircle2 size={38} /></div>
         <p className="eyebrow">Registro concluido</p><h1>¡Muchas gracias!</h1>
@@ -185,11 +183,10 @@ export default function Home() {
   );
 
   return (
-    <main className="app-shell screen-pattern min-h-screen px-4 py-8 md:px-8">
-      <style>{`.screen-pattern{background:#5b1029 url('/fondo-guinda.png') center/cover no-repeat fixed !important;}`}</style>
-      <div className="app-content">
+    <main className="app-shell min-h-screen px-4 py-8 md:px-8">
+      <div className="mx-auto max-w-6xl">
         <header className="brand-header">
-          <div className="brand-mark"><Building2 size={25} /></div>
+          <div className="brand-mark"><span className="dgb-logo" role="img" aria-label="DGB" /></div>
           <div><p className="eyebrow">Dirección General de Bachillerato</p><h1>Registro de planteles</h1></div>
         </header>
         <section className="form-card">
@@ -234,15 +231,14 @@ export default function Home() {
                   <label>Longitud <b>*</b><input required value={plantel.longitud} onChange={(e) => actualizarPlantel(municipioActivo, plantel.id, "longitud", e.target.value)} placeholder="Ej. -99.133209" /></label>
                   <label>Código Postal <b>*</b><input required inputMode="numeric" maxLength={5} pattern="[0-9]{5}" value={plantel.codigoPostal} onChange={(e) => actualizarPlantel(municipioActivo, plantel.id, "codigoPostal", e.target.value.replace(/\D/g, "").slice(0, 5))} placeholder="Ej. 06000" /></label>
                   <label className="wide">Enlace de Google Maps <b>*</b><input required type="url" value={plantel.linkGoogleMaps} onChange={(e) => actualizarPlantel(municipioActivo, plantel.id, "linkGoogleMaps", e.target.value)} placeholder="https://maps.google.com/..." /></label>
-                  <label>Capacidad máxima en plantel <b>*</b><input required type="number" min="0" step="1" value={plantel.capacidadMaximaPlantel} onChange={(e) => actualizarPlantel(municipioActivo, plantel.id, "capacidadMaximaPlantel", e.target.value)} placeholder="Ej. 600" /></label>
-                  <label>Capacidad instalada <b>*</b><input required type="number" min="0" step="1" value={plantel.capacidadInstalada} onChange={(e) => actualizarPlantel(municipioActivo, plantel.id, "capacidadInstalada", e.target.value)} placeholder="Ej. 450" /></label>
                   <label>Aulas didácticas <b>*</b><input required type="number" min="0" value={plantel.aulasDidacticas} onChange={(e) => actualizarPlantel(municipioActivo, plantel.id, "aulasDidacticas", e.target.value)} placeholder="Ej. 12" /></label>
                   <label>Capacidad por aula <b>*</b><input required type="number" min="0" value={plantel.capacidadPorAula} onChange={(e) => actualizarPlantel(municipioActivo, plantel.id, "capacidadPorAula", e.target.value)} placeholder="Ej. 30" /></label>
+                  <label>Capacidad instalada <b>*</b><input required type="number" min="0" step="1" value={plantel.capacidadInstalada} onChange={(e) => actualizarPlantel(municipioActivo, plantel.id, "capacidadInstalada", e.target.value)} placeholder="Ej. 450" /></label>
                   <label>Computadoras <b>*</b><input required type="number" min="0" value={plantel.computadoras} onChange={(e) => actualizarPlantel(municipioActivo, plantel.id, "computadoras", e.target.value)} placeholder="Ej. 25" /></label>
                   <label>Movilidad <b>*</b><input required value={plantel.movilidad} onChange={(e) => actualizarPlantel(municipioActivo, plantel.id, "movilidad", e.target.value)} placeholder="Ej. transporte público" /></label>
                   <label>Horario <b>*</b><input required value={plantel.horario} onChange={(e) => actualizarPlantel(municipioActivo, plantel.id, "horario", e.target.value)} placeholder="Ej. 08:00 a 18:00" /></label>
                 </div>
-                <div className="switch-grid">{([['agua','Agua'],['luz','Luz'],['internet','Internet'],['drenaje','Drenaje'],['equipoComputo','Equipo de cómputo'],['laboratorio','Laboratorio'],['banos','Baños'],['espacioAdministrativo','Espacio administrativo']] as const).map(([campo, etiqueta]) => <fieldset className="boolean-field" key={campo}><legend>{etiqueta} <b>*</b></legend><div className="yes-no-options"><button type="button" className={plantel[campo] === true ? "selected" : ""} aria-pressed={plantel[campo] === true} onClick={() => actualizarPlantel(municipioActivo, plantel.id, campo, true)}>Sí</button><button type="button" className={plantel[campo] === false ? "selected" : ""} aria-pressed={plantel[campo] === false} onClick={() => actualizarPlantel(municipioActivo, plantel.id, campo, false)}>No</button></div></fieldset>)}</div>
+                <div className="switch-grid">{([['agua','Agua'],['luz','Luz'],['internet','Internet'],['drenaje','Drenaje'],['equipoComputo','Aulas de cómputo'],['laboratorio','Laboratorio'],['banos','Baños'],['espacioAdministrativo','Espacio administrativo']] as const).map(([campo, etiqueta]) => <fieldset className="boolean-field" key={campo}><legend>{etiqueta} <b>*</b></legend><div className="yes-no-options"><button type="button" className={plantel[campo] === true ? "selected" : ""} aria-pressed={plantel[campo] === true} onClick={() => actualizarPlantel(municipioActivo, plantel.id, campo, true)}>Sí</button><button type="button" className={plantel[campo] === false ? "selected" : ""} aria-pressed={plantel[campo] === false} onClick={() => actualizarPlantel(municipioActivo, plantel.id, campo, false)}>No</button></div></fieldset>)}</div>
               </article>)}
               {municipioActivo && <button type="button" className="add-button" onClick={() => agregarPlantel(municipioActivo)}><Plus size={17} /> Agregar otro plantel en {municipioActivo}</button>}
             </section>}

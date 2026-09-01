@@ -4,6 +4,9 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Registro de planteles DGB",
   description: "Formulario para registrar planteles por estado y municipio.",
+  other: {
+    "codex-preview": "development",
+  },
   icons: {
     icon: "/favicon.svg",
     shortcut: "/favicon.svg",
