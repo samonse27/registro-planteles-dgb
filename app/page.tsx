@@ -36,6 +36,7 @@ export default function Home() {
   const [enviando, setEnviando] = useState(false);
   const [mensaje, setMensaje] = useState("");
   const [finalizado, setFinalizado] = useState(false);
+  const [mostrarErrores, setMostrarErrores] = useState(false);
 
   const opcionesMunicipios = useMemo(() => MUNICIPIOS_POR_ESTADO[estado] ?? [], [estado]);
   const municipios = useMemo(() => Object.keys(planteles), [planteles]);
@@ -49,7 +50,7 @@ export default function Home() {
   const cantidadPlanteles = Object.values(planteles).reduce((total, lista) => total + lista.length, 0);
 
   const elegirEstado = (clave: string) => {
-    setEstado(clave); setPlanteles({}); setMunicipioActivo(""); setBusquedaMunicipio("");
+    setEstado(clave); setPlanteles({}); setMunicipioActivo(""); setBusquedaMunicipio(""); setMostrarErrores(false);
   };
 
   const alternarMunicipio = (municipio: string) => {
@@ -101,7 +102,15 @@ export default function Home() {
 
   const avanzar = () => {
     setMensaje("");
-    if (!puedeContinuar()) { setMensaje("Complete los campos obligatorios antes de continuar."); return; }
+    setMostrarErrores(true);
+    if (!puedeContinuar()) {
+      setMensaje("Revise los campos señalados antes de continuar.");
+      requestAnimationFrame(() => {
+        document.querySelector<HTMLElement>('[aria-invalid="true"]')?.focus();
+      });
+      return;
+    }
+    setMostrarErrores(false);
     if (paso === 1) {
       if (!municipioActivo) setMunicipioActivo(municipios[0]);
       setPaso(2);
@@ -112,12 +121,14 @@ export default function Home() {
       const indiceActual = municipios.indexOf(municipioActivo);
       if (indiceActual < municipios.length - 1) {
         setMunicipioActivo(municipios[indiceActual + 1]);
+        setMostrarErrores(false);
         window.scrollTo({ top: 0, behavior: "smooth" });
         return;
       }
       const municipioIncompleto = municipios.find((municipio) => !municipioCompleto(municipio));
       if (municipioIncompleto) {
         setMunicipioActivo(municipioIncompleto);
+        setMostrarErrores(true);
         setMensaje(`Complete la información de ${municipioIncompleto} antes de revisar el registro.`);
         window.scrollTo({ top: 0, behavior: "smooth" });
         return;
@@ -193,19 +204,19 @@ export default function Home() {
           <nav className="steps" aria-label="Progreso del formulario">
             {PASOS.map((nombre, indice) => <div className={`step ${indice === paso ? "active" : ""} ${indice < paso ? "done" : ""}`} key={nombre}><span>{indice < paso ? <Check size={15} /> : indice + 1}</span><small>{nombre}</small></div>)}
           </nav>
-          <form onSubmit={(event) => event.preventDefault()}>
+          <form className={mostrarErrores ? "show-validation" : ""} onSubmit={(event) => event.preventDefault()} noValidate>
             {paso === 0 && <section className="panel narrow-panel">
               <p className="eyebrow">Paso 1 de 4</p><h2>Datos de la persona responsable</h2>
               <p className="section-copy">Usaremos estos datos únicamente para identificar el registro.</p>
-              <label>Nombre completo <b>*</b><input required value={nombreResponsable} onChange={(e) => setNombreResponsable(e.target.value)} placeholder="Ej. Juan Torres" autoComplete="name" /></label>
-              <label>Correo electrónico <b>*</b><input required type="email" value={correoResponsable} onChange={(e) => setCorreoResponsable(e.target.value)} placeholder="nombre@dgb.sems.gob.mx" autoComplete="email" /></label>
+              <label>Nombre completo <b>*</b><input required aria-invalid={mostrarErrores && !nombreResponsable.trim()} value={nombreResponsable} onChange={(e) => setNombreResponsable(e.target.value)} placeholder="Ej. Juan Torres" autoComplete="name" /><span className="field-error">Falta capturar el nombre completo.</span></label>
+              <label>Correo electrónico <b>*</b><input required type="email" aria-invalid={mostrarErrores && !correoResponsable.includes("@")} value={correoResponsable} onChange={(e) => setCorreoResponsable(e.target.value)} placeholder="nombre@dgb.sems.gob.mx" autoComplete="email" /><span className="field-error">Capture un correo electrónico válido.</span></label>
             </section>}
 
             {paso === 1 && <section className="panel">
               <p className="eyebrow">Paso 2 de 4</p><h2>Seleccione estado y municipios</h2>
               <div className="two-columns">
-                <label>Estado <b>*</b><select required value={estado} onChange={(e) => elegirEstado(e.target.value)}><option value="">Seleccione un estado</option>{ESTADOS.map((item) => <option key={item.clave} value={item.clave}>{item.nombre}</option>)}</select></label>
-                <div><span className="field-title">Municipios seleccionados</span><div className={`selection-summary ${municipios.length === 0 ? "empty" : ""}`}>{municipios.length === 0 ? "0 seleccionados" : `${municipios.length} seleccionado${municipios.length === 1 ? "" : "s"}`}</div></div>
+                <label>Estado <b>*</b><select required aria-invalid={mostrarErrores && !estado} value={estado} onChange={(e) => elegirEstado(e.target.value)}><option value="">Seleccione un estado</option>{ESTADOS.map((item) => <option key={item.clave} value={item.clave}>{item.nombre}</option>)}</select><span className="field-error">Falta seleccionar el estado.</span></label>
+                <div><span className="field-title">Municipios seleccionados</span><div tabIndex={-1} aria-invalid={mostrarErrores && municipios.length === 0} className={`selection-summary ${municipios.length === 0 ? "empty" : ""}`}>{municipios.length === 0 ? "0 seleccionados" : `${municipios.length} seleccionado${municipios.length === 1 ? "" : "s"}`}</div>{mostrarErrores && municipios.length === 0 && <span className="field-error visible">Seleccione al menos un municipio.</span>}</div>
               </div>
               {estado && <>
                 <div className="municipality-toolbar">
@@ -225,20 +236,20 @@ export default function Home() {
               {municipioActivo && planteles[municipioActivo]?.map((plantel, indice) => <article className="plant-card" key={plantel.id}>
                 <div className="plant-card-header"><h3>Plantel {indice + 1} en {municipioActivo}</h3>{planteles[municipioActivo].length > 1 && <button type="button" className="icon-danger" onClick={() => eliminarPlantel(municipioActivo, plantel.id)} aria-label="Eliminar plantel"><Trash2 size={17} /></button>}</div>
                 <div className="field-grid">
-                  <label>Nombre del plantel <b>*</b><input required value={plantel.nombre} onChange={(e) => actualizarPlantel(municipioActivo, plantel.id, "nombre", e.target.value)} /></label>
-                  <label>Dirección del plantel <b>*</b><input required value={plantel.direccion} onChange={(e) => actualizarPlantel(municipioActivo, plantel.id, "direccion", e.target.value)} /></label>
-                  <label>Latitud <b>*</b><input required value={plantel.latitud} onChange={(e) => actualizarPlantel(municipioActivo, plantel.id, "latitud", e.target.value)} placeholder="Ej. 19.432608" /></label>
-                  <label>Longitud <b>*</b><input required value={plantel.longitud} onChange={(e) => actualizarPlantel(municipioActivo, plantel.id, "longitud", e.target.value)} placeholder="Ej. -99.133209" /></label>
-                  <label>Código Postal <b>*</b><input required inputMode="numeric" maxLength={5} pattern="[0-9]{5}" value={plantel.codigoPostal} onChange={(e) => actualizarPlantel(municipioActivo, plantel.id, "codigoPostal", e.target.value.replace(/\D/g, "").slice(0, 5))} placeholder="Ej. 06000" /></label>
-                  <label className="wide">Enlace de Google Maps <b>*</b><input required type="url" value={plantel.linkGoogleMaps} onChange={(e) => actualizarPlantel(municipioActivo, plantel.id, "linkGoogleMaps", e.target.value)} placeholder="https://maps.google.com/..." /></label>
-                  <label>Aulas didácticas <b>*</b><input required type="number" min="0" value={plantel.aulasDidacticas} onChange={(e) => actualizarPlantel(municipioActivo, plantel.id, "aulasDidacticas", e.target.value)} placeholder="Ej. 12" /></label>
-                  <label>Capacidad por aula <b>*</b><input required type="number" min="0" value={plantel.capacidadPorAula} onChange={(e) => actualizarPlantel(municipioActivo, plantel.id, "capacidadPorAula", e.target.value)} placeholder="Ej. 30" /></label>
-                  <label>Capacidad instalada <b>*</b><input required type="number" min="0" step="1" value={plantel.capacidadInstalada} onChange={(e) => actualizarPlantel(municipioActivo, plantel.id, "capacidadInstalada", e.target.value)} placeholder="Ej. 450" /></label>
-                  <label>Computadoras <b>*</b><input required type="number" min="0" value={plantel.computadoras} onChange={(e) => actualizarPlantel(municipioActivo, plantel.id, "computadoras", e.target.value)} placeholder="Ej. 25" /></label>
-                  <label>Movilidad <b>*</b><input required value={plantel.movilidad} onChange={(e) => actualizarPlantel(municipioActivo, plantel.id, "movilidad", e.target.value)} placeholder="Ej. transporte público" /></label>
-                  <label>Horario <b>*</b><input required value={plantel.horario} onChange={(e) => actualizarPlantel(municipioActivo, plantel.id, "horario", e.target.value)} placeholder="Ej. 08:00 a 18:00" /></label>
+                  <label>Nombre del plantel <b>*</b><input required aria-invalid={mostrarErrores && !plantel.nombre.trim()} value={plantel.nombre} onChange={(e) => actualizarPlantel(municipioActivo, plantel.id, "nombre", e.target.value)} /><span className="field-error">Falta capturar el nombre del plantel.</span></label>
+                  <label>Dirección del plantel <b>*</b><input required aria-invalid={mostrarErrores && !plantel.direccion.trim()} value={plantel.direccion} onChange={(e) => actualizarPlantel(municipioActivo, plantel.id, "direccion", e.target.value)} /><span className="field-error">Falta capturar la dirección del plantel.</span></label>
+                  <label>Latitud <b>*</b><input required aria-invalid={mostrarErrores && !plantel.latitud.trim()} value={plantel.latitud} onChange={(e) => actualizarPlantel(municipioActivo, plantel.id, "latitud", e.target.value)} placeholder="Ej. 19.432608" /><span className="field-error">Falta capturar la latitud.</span></label>
+                  <label>Longitud <b>*</b><input required aria-invalid={mostrarErrores && !plantel.longitud.trim()} value={plantel.longitud} onChange={(e) => actualizarPlantel(municipioActivo, plantel.id, "longitud", e.target.value)} placeholder="Ej. -99.133209" /><span className="field-error">Falta capturar la longitud.</span></label>
+                  <label>Código Postal <b>*</b><input required inputMode="numeric" maxLength={5} pattern="[0-9]{5}" aria-invalid={mostrarErrores && !/^[0-9]{5}$/.test(plantel.codigoPostal)} value={plantel.codigoPostal} onChange={(e) => actualizarPlantel(municipioActivo, plantel.id, "codigoPostal", e.target.value.replace(/\D/g, "").slice(0, 5))} placeholder="Ej. 06000" /><span className="field-error">Capture un Código Postal de 5 dígitos.</span></label>
+                  <label className="wide">Enlace de Google Maps <b>*</b><input required type="url" aria-invalid={mostrarErrores && !plantel.linkGoogleMaps.trim()} value={plantel.linkGoogleMaps} onChange={(e) => actualizarPlantel(municipioActivo, plantel.id, "linkGoogleMaps", e.target.value)} placeholder="https://maps.google.com/..." /><span className="field-error">Falta capturar un enlace válido de Google Maps.</span></label>
+                  <label>Aulas didácticas <b>*</b><input required type="number" min="0" aria-invalid={mostrarErrores && plantel.aulasDidacticas === ""} value={plantel.aulasDidacticas} onChange={(e) => actualizarPlantel(municipioActivo, plantel.id, "aulasDidacticas", e.target.value)} placeholder="Ej. 12" /><span className="field-error">Falta indicar la cantidad de aulas didácticas.</span></label>
+                  <label>Capacidad por aula <b>*</b><input required type="number" min="0" aria-invalid={mostrarErrores && plantel.capacidadPorAula === ""} value={plantel.capacidadPorAula} onChange={(e) => actualizarPlantel(municipioActivo, plantel.id, "capacidadPorAula", e.target.value)} placeholder="Ej. 30" /><span className="field-error">Falta indicar la capacidad por aula.</span></label>
+                  <label>Capacidad instalada <b>*</b><input required type="number" min="0" step="1" aria-invalid={mostrarErrores && plantel.capacidadInstalada === ""} value={plantel.capacidadInstalada} onChange={(e) => actualizarPlantel(municipioActivo, plantel.id, "capacidadInstalada", e.target.value)} placeholder="Ej. 450" /><span className="field-error">Falta indicar la capacidad instalada.</span></label>
+                  <label>Computadoras <b>*</b><input required type="number" min="0" aria-invalid={mostrarErrores && plantel.computadoras === ""} value={plantel.computadoras} onChange={(e) => actualizarPlantel(municipioActivo, plantel.id, "computadoras", e.target.value)} placeholder="Ej. 25" /><span className="field-error">Falta indicar la cantidad de computadoras.</span></label>
+                  <label>Movilidad <b>*</b><input required aria-invalid={mostrarErrores && !plantel.movilidad.trim()} value={plantel.movilidad} onChange={(e) => actualizarPlantel(municipioActivo, plantel.id, "movilidad", e.target.value)} placeholder="Ej. transporte público" /><span className="field-error">Falta capturar la información de movilidad.</span></label>
+                  <label>Horario <b>*</b><input required aria-invalid={mostrarErrores && !plantel.horario.trim()} value={plantel.horario} onChange={(e) => actualizarPlantel(municipioActivo, plantel.id, "horario", e.target.value)} placeholder="Ej. 08:00 a 18:00" /><span className="field-error">Falta capturar el horario.</span></label>
                 </div>
-                <div className="switch-grid">{([['agua','Agua'],['luz','Luz'],['internet','Internet'],['drenaje','Drenaje'],['equipoComputo','Aulas de cómputo'],['laboratorio','Laboratorio'],['banos','Baños'],['espacioAdministrativo','Espacio administrativo']] as const).map(([campo, etiqueta]) => <fieldset className="boolean-field" key={campo}><legend>{etiqueta} <b>*</b></legend><div className="yes-no-options"><button type="button" className={plantel[campo] === true ? "selected" : ""} aria-pressed={plantel[campo] === true} onClick={() => actualizarPlantel(municipioActivo, plantel.id, campo, true)}>Sí</button><button type="button" className={plantel[campo] === false ? "selected" : ""} aria-pressed={plantel[campo] === false} onClick={() => actualizarPlantel(municipioActivo, plantel.id, campo, false)}>No</button></div></fieldset>)}</div>
+                <div className="switch-grid">{([['agua','Agua'],['luz','Luz'],['internet','Internet'],['drenaje','Drenaje'],['equipoComputo','Aulas de cómputo'],['laboratorio','Laboratorio'],['banos','Baños'],['espacioAdministrativo','Espacio administrativo']] as const).map(([campo, etiqueta]) => <fieldset tabIndex={-1} aria-invalid={mostrarErrores && plantel[campo] === null} className="boolean-field" key={campo}><legend>{etiqueta} <b>*</b></legend><div className="yes-no-options"><button type="button" className={plantel[campo] === true ? "selected" : ""} aria-pressed={plantel[campo] === true} onClick={() => actualizarPlantel(municipioActivo, plantel.id, campo, true)}>Sí</button><button type="button" className={plantel[campo] === false ? "selected" : ""} aria-pressed={plantel[campo] === false} onClick={() => actualizarPlantel(municipioActivo, plantel.id, campo, false)}>No</button></div>{mostrarErrores && plantel[campo] === null && <span className="field-error visible">Seleccione Sí o No.</span>}</fieldset>)}</div>
               </article>)}
               {municipioActivo && <button type="button" className="add-button" onClick={() => agregarPlantel(municipioActivo)}><Plus size={17} /> Agregar otro plantel en {municipioActivo}</button>}
             </section>}
