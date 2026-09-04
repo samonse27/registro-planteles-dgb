@@ -36,6 +36,9 @@ label,.field-title { display:flex; flex-direction:column; gap:8px; color:#56303e
 label b { color:#9b2247; }
 input,select { width:100%; border:1px solid #d7b8c3; border-radius:11px; background:white; padding:12px 13px; color:#35131f; outline:none; transition:.2s; }
 input:focus,select:focus { border-color:#a57f2c; box-shadow:0 0 0 3px rgba(165,127,44,.16); }
+.field-error { display:none; color:#a61b16; font-size:.78rem; font-weight:650; line-height:1.35; }
+.field-error.visible,.show-validation input:invalid+.field-error,.show-validation select:invalid+.field-error { display:block; }
+.show-validation [aria-invalid="true"] { border-color:#c72b24; box-shadow:0 0 0 3px rgba(199,43,36,.12); }
 .narrow-panel label+label { margin-top:20px; }
 .two-columns,.field-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px; }
 .selection-summary { height:45px; display:flex; align-items:center; border-radius:11px; padding:0 14px; background:#f5e8ec; color:#9b2247; font-weight:800; }
