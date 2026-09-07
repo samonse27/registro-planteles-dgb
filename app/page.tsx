@@ -26,6 +26,8 @@ const nuevoPlantel = (): Plantel => ({
 
 const PASOS = ["Responsable", "Municipios", "Planteles", "Revisión"];
 
+const respuestaSiNo = (valor: boolean | null) => valor === true ? "Sí" : valor === false ? "No" : "Sin respuesta";
+
 const errorEnlaceGoogleMaps = (valor: string) => {
   const enlace = valor.trim();
   if (!enlace) return "Falta pegar el enlace de Google Maps.";
@@ -200,6 +202,14 @@ export default function Home() {
     finally { setEnviando(false); }
   };
 
+  const editarMunicipio = (municipio: string) => {
+    setMunicipioActivo(municipio);
+    setMostrarErrores(false);
+    setMensaje("");
+    setPaso(2);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   if (finalizado) return (
     <main className="app-shell flex min-h-screen items-center justify-center p-5">
       <section className="glass-card max-w-xl text-center">
@@ -216,7 +226,7 @@ export default function Home() {
       <div className="mx-auto max-w-6xl">
         <header className="brand-header">
           <div className="brand-mark"><span className="dgb-logo" role="img" aria-label="DGB" /></div>
-          <div><p className="eyebrow">Dirección General de Bachillerato</p><h1>Registro de planteles</h1></div>
+          <div><p className="eyebrow">Dirección General de Bachillerato</p><h1>REGISTRO DE PLANTELES CECATIS</h1></div>
         </header>
         <section className="form-card">
           <nav className="steps" aria-label="Progreso del formulario">
@@ -311,9 +321,38 @@ export default function Home() {
 
             {paso === 3 && <section className="panel">
               <p className="eyebrow">Paso 4 de 4</p><h2>Revisión del registro</h2>
-              <p className="section-copy">Verifique la información antes de enviarla.</p>
+              <p className="section-copy">Verifique toda la información antes de enviarla. Despliegue cada municipio para consultar sus planteles o regresar a modificarlos.</p>
               <div className="review-contact"><strong>{nombreResponsable}</strong><span>{correoResponsable}</span><span>{ESTADOS.find((item) => item.clave === estado)?.nombre}</span></div>
-              <div className="review-list">{municipios.map((municipio) => <article key={municipio}><div><MapPin size={18} /><strong>{municipio}</strong></div><span>{planteles[municipio]?.length ?? 0} plantel(es)</span></article>)}</div>
+              <div className="review-list">{municipios.map((municipio) => <details className="review-municipality" key={municipio}>
+                <summary><span><MapPin size={18} /><strong>{municipio}</strong></span><span>{planteles[municipio]?.length ?? 0} plantel(es) <ChevronDown size={18} /></span></summary>
+                <div className="review-municipality-body">
+                  {planteles[municipio]?.map((plantel, indice) => <article className="review-plant" key={plantel.id}>
+                    <h3>Plantel {indice + 1}: {plantel.nombre}</h3>
+                    <dl className="review-data-grid">
+                      <div className="wide"><dt>Dirección</dt><dd>{plantel.direccion}</dd></div>
+                      <div><dt>Latitud</dt><dd>{plantel.latitud}</dd></div>
+                      <div><dt>Longitud</dt><dd>{plantel.longitud}</dd></div>
+                      <div><dt>Código Postal</dt><dd>{plantel.codigoPostal}</dd></div>
+                      <div><dt>Aulas didácticas</dt><dd>{plantel.aulasDidacticas}</dd></div>
+                      <div><dt>Capacidad por aula</dt><dd>{plantel.capacidadPorAula}</dd></div>
+                      <div><dt>Capacidad instalada</dt><dd>{plantel.capacidadInstalada}</dd></div>
+                      <div><dt>Computadoras</dt><dd>{plantel.computadoras}</dd></div>
+                      <div><dt>Movilidad</dt><dd>{plantel.movilidad}</dd></div>
+                      <div><dt>Horario</dt><dd>{plantel.horario}</dd></div>
+                      <div><dt>Agua</dt><dd>{respuestaSiNo(plantel.agua)}</dd></div>
+                      <div><dt>Luz</dt><dd>{respuestaSiNo(plantel.luz)}</dd></div>
+                      <div><dt>Internet</dt><dd>{respuestaSiNo(plantel.internet)}</dd></div>
+                      <div><dt>Drenaje</dt><dd>{respuestaSiNo(plantel.drenaje)}</dd></div>
+                      <div><dt>Aulas de cómputo</dt><dd>{respuestaSiNo(plantel.equipoComputo)}</dd></div>
+                      <div><dt>Laboratorio</dt><dd>{respuestaSiNo(plantel.laboratorio)}</dd></div>
+                      <div><dt>Baños</dt><dd>{respuestaSiNo(plantel.banos)}</dd></div>
+                      <div><dt>Espacio administrativo</dt><dd>{respuestaSiNo(plantel.espacioAdministrativo)}</dd></div>
+                      <div className="wide"><dt>Enlace de Google Maps</dt><dd><a href={plantel.linkGoogleMaps} target="_blank" rel="noopener noreferrer">Abrir ubicación <ExternalLink size={14} /></a></dd></div>
+                    </dl>
+                  </article>)}
+                  <button type="button" className="edit-municipality-button" onClick={() => editarMunicipio(municipio)}>Editar planteles de {municipio}</button>
+                </div>
+              </details>)}</div>
               <div className="review-total">Total de planteles <strong>{cantidadPlanteles}</strong></div>
             </section>}
 
