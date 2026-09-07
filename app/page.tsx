@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { ArrowLeft, ArrowRight, Check, CheckCircle2, MapPin, Plus, Search, Send, Trash2, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, CheckCircle2, ExternalLink, MapPin, Plus, Search, Send, Trash2, X } from "lucide-react";
 import { ESTADOS, MUNICIPIOS_POR_ESTADO } from "@/lib/catalogos";
 
 type Plantel = {
@@ -24,6 +24,23 @@ const nuevoPlantel = (): Plantel => ({
 });
 
 const PASOS = ["Responsable", "Municipios", "Planteles", "Revisión"];
+
+const errorEnlaceGoogleMaps = (valor: string) => {
+  const enlace = valor.trim();
+  if (!enlace) return "Falta pegar el enlace de Google Maps.";
+  if (enlace.length > 255) return "El enlace es demasiado largo. En Google Maps seleccione Compartir y después Copiar vínculo.";
+  try {
+    const url = new URL(enlace);
+    if (url.protocol !== "https:") return "El enlace debe comenzar con https://";
+    const host = url.hostname.toLowerCase();
+    const esGoogleMaps = host === "maps.app.goo.gl" || host === "goo.gl" || /^(www\.|maps\.)?google\.[a-z.]+$/.test(host);
+    const rutaGoogleMaps = host.startsWith("maps.") || host === "maps.app.goo.gl" || host === "goo.gl" || url.pathname.includes("/maps");
+    if (!esGoogleMaps || !rutaGoogleMaps) return "Pegue un enlace obtenido desde Google Maps, no el domicilio del plantel.";
+    return "";
+  } catch {
+    return "Pegue el enlace completo de Google Maps; debe comenzar con https://";
+  }
+};
 
 export default function Home() {
   const [paso, setPaso] = useState(0);
@@ -80,7 +97,7 @@ export default function Home() {
   const plantelCompleto = (plantel: Plantel) => Boolean(
     plantel.nombre.trim() && plantel.direccion.trim() && plantel.latitud.trim() &&
     plantel.longitud.trim() && /^[0-9]{5}$/.test(plantel.codigoPostal) &&
-    plantel.linkGoogleMaps.trim() && plantel.capacidadInstalada !== "" &&
+    !errorEnlaceGoogleMaps(plantel.linkGoogleMaps) && plantel.capacidadInstalada !== "" &&
     plantel.aulasDidacticas !== "" &&
     plantel.capacidadPorAula !== "" && plantel.computadoras !== "" &&
     plantel.movilidad.trim() && plantel.horario.trim() &&
@@ -241,7 +258,15 @@ export default function Home() {
                   <label>Latitud <b>*</b><input required aria-invalid={mostrarErrores && !plantel.latitud.trim()} value={plantel.latitud} onChange={(e) => actualizarPlantel(municipioActivo, plantel.id, "latitud", e.target.value)} placeholder="Ej. 19.432608" /><span className="field-error">Falta capturar la latitud.</span></label>
                   <label>Longitud <b>*</b><input required aria-invalid={mostrarErrores && !plantel.longitud.trim()} value={plantel.longitud} onChange={(e) => actualizarPlantel(municipioActivo, plantel.id, "longitud", e.target.value)} placeholder="Ej. -99.133209" /><span className="field-error">Falta capturar la longitud.</span></label>
                   <label>Código Postal <b>*</b><input required inputMode="numeric" maxLength={5} pattern="[0-9]{5}" aria-invalid={mostrarErrores && !/^[0-9]{5}$/.test(plantel.codigoPostal)} value={plantel.codigoPostal} onChange={(e) => actualizarPlantel(municipioActivo, plantel.id, "codigoPostal", e.target.value.replace(/\D/g, "").slice(0, 5))} placeholder="Ej. 06000" /><span className="field-error">Capture un Código Postal de 5 dígitos.</span></label>
-                  <label className="wide">Enlace de Google Maps <b>*</b><input required type="url" aria-invalid={mostrarErrores && !plantel.linkGoogleMaps.trim()} value={plantel.linkGoogleMaps} onChange={(e) => actualizarPlantel(municipioActivo, plantel.id, "linkGoogleMaps", e.target.value)} placeholder="https://maps.google.com/..." /><span className="field-error">Falta capturar un enlace válido de Google Maps.</span></label>
+                  <label className="wide maps-field">Enlace de Google Maps <b>*</b>
+                    <span className="field-help">En Google Maps abra la ubicación del plantel, seleccione <strong>Compartir</strong> y después <strong>Copiar vínculo</strong>. Pegue el vínculo aquí; no escriba el domicilio.</span>
+                    <input required type="url" aria-invalid={mostrarErrores && Boolean(errorEnlaceGoogleMaps(plantel.linkGoogleMaps))} value={plantel.linkGoogleMaps} onChange={(e) => actualizarPlantel(municipioActivo, plantel.id, "linkGoogleMaps", e.target.value)} onBlur={(e) => actualizarPlantel(municipioActivo, plantel.id, "linkGoogleMaps", e.target.value.trim())} placeholder="Ej. https://maps.app.goo.gl/..." />
+                    {mostrarErrores && errorEnlaceGoogleMaps(plantel.linkGoogleMaps) && <span className="field-error visible">{errorEnlaceGoogleMaps(plantel.linkGoogleMaps)}</span>}
+                    <div className="maps-tools">
+                      <details className="maps-help"><summary>¿Cómo obtener el enlace?</summary><ol><li>Abra Google Maps y busque el plantel.</li><li>Seleccione <strong>Compartir</strong>.</li><li>Seleccione <strong>Copiar vínculo</strong> y péguelo en este campo.</li></ol></details>
+                      {!errorEnlaceGoogleMaps(plantel.linkGoogleMaps) && <a className="verify-link" href={plantel.linkGoogleMaps.trim()} target="_blank" rel="noopener noreferrer"><ExternalLink size={15} /> Verificar enlace</a>}
+                    </div>
+                  </label>
                   <label>Aulas didácticas <b>*</b><input required type="number" min="0" aria-invalid={mostrarErrores && plantel.aulasDidacticas === ""} value={plantel.aulasDidacticas} onChange={(e) => actualizarPlantel(municipioActivo, plantel.id, "aulasDidacticas", e.target.value)} placeholder="Ej. 12" /><span className="field-error">Falta indicar la cantidad de aulas didácticas.</span></label>
                   <label>Capacidad por aula <b>*</b><input required type="number" min="0" aria-invalid={mostrarErrores && plantel.capacidadPorAula === ""} value={plantel.capacidadPorAula} onChange={(e) => actualizarPlantel(municipioActivo, plantel.id, "capacidadPorAula", e.target.value)} placeholder="Ej. 30" /><span className="field-error">Falta indicar la capacidad por aula.</span></label>
                   <label>Capacidad instalada <b>*</b><input required type="number" min="0" step="1" aria-invalid={mostrarErrores && plantel.capacidadInstalada === ""} value={plantel.capacidadInstalada} onChange={(e) => actualizarPlantel(municipioActivo, plantel.id, "capacidadInstalada", e.target.value)} placeholder="Ej. 450" /><span className="field-error">Falta indicar la capacidad instalada.</span></label>
