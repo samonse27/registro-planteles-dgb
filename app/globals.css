@@ -69,10 +69,26 @@ input:focus,select:focus { border-color:#a57f2c; box-shadow:0 0 0 3px rgba(165,1
 .field-grid .wide { grid-column:1/-1; }
 .field-help { color:#765966; font-size:.82rem; font-weight:500; line-height:1.5; }
 .field-help strong { color:#56303e; }
-.maps-tools { display:flex; align-items:flex-start; justify-content:space-between; gap:14px; flex-wrap:wrap; }
-.maps-help { color:#7b193b; font-size:.82rem; font-weight:700; }
-.maps-help summary { cursor:pointer; width:max-content; }
-.maps-help ol { margin:9px 0 0; padding-left:20px; color:#765966; font-weight:500; line-height:1.6; }
+.maps-tools { display:flex; align-items:flex-start; justify-content:space-between; gap:14px; margin-top:12px; }
+.maps-guide { flex:1; border:1px solid #dec3cd; border-radius:14px; background:#fffafc; overflow:hidden; }
+.maps-guide summary { display:flex; align-items:center; gap:11px; min-height:58px; padding:11px 14px; color:#6d1935; cursor:pointer; list-style:none; }
+.maps-guide summary::-webkit-details-marker { display:none; }
+.maps-guide summary:hover { background:#f9edf1; }
+.maps-guide summary>span:nth-child(2) { display:flex; flex:1; flex-direction:column; gap:2px; }
+.maps-guide summary strong { font-size:.9rem; }
+.maps-guide summary small { color:#806371; font-size:.75rem; font-weight:500; }
+.maps-guide-icon { width:36px; height:36px; display:grid; place-items:center; flex:0 0 auto; border-radius:50%; background:#f3dfe6; color:#9b2247; }
+.maps-guide-chevron { transition:transform .2s ease; }
+.maps-guide[open] .maps-guide-chevron { transform:rotate(180deg); }
+.maps-guide-body { border-top:1px solid #ead7dd; padding:18px; background:white; }
+.maps-guide-intro { margin:0 0 16px; color:#624452; font-size:.86rem; line-height:1.5; }
+.maps-guide-steps { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; margin:0; padding:0; list-style:none; }
+.maps-guide-steps li { display:grid; grid-template-columns:30px minmax(0,1fr); gap:10px; align-items:start; min-width:0; padding:14px; border:1px solid #ead7dd; border-radius:13px; background:#fffafc; }
+.step-number { width:28px; height:28px; display:grid; place-items:center; border-radius:50%; background:#9b2247; color:white; font-size:.78rem; font-weight:800; }
+.maps-guide-steps h4 { margin:3px 0 4px; color:#56303e; font-size:.9rem; }
+.maps-guide-steps p { margin:0 0 11px; color:#765966; font-size:.8rem; font-weight:500; line-height:1.45; }
+.maps-guide-steps a { color:#7b193b; font-weight:700; }
+.maps-guide-steps img { display:block; width:100%; height:auto; max-height:260px; object-fit:contain; object-position:left top; border:1px solid #e5cfd6; border-radius:9px; background:white; }
 .verify-link { display:inline-flex; align-items:center; gap:6px; color:#7b193b; font-size:.82rem; font-weight:750; text-decoration:none; }
 .verify-link:hover { text-decoration:underline; }
 .switch-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:20px; }
@@ -101,4 +117,4 @@ input:focus,select:focus { border-color:#a57f2c; box-shadow:0 0 0 3px rgba(165,1
 .primary-button:disabled { opacity:.6; cursor:wait; }
 .secondary-button { border:1px solid #d6b7c2; background:white; color:#6d1935; }
 .error-message { margin:0 clamp(24px,5vw,58px) 12px; border-radius:10px; padding:11px 14px; color:#8f1915; background:#fff0ef; border:1px solid #f3c1bd; }
-@media(max-width:760px){ .steps{padding:16px 8px}.step{gap:0}.step small{display:none}.two-columns,.field-grid{grid-template-columns:1fr}.field-grid .wide{grid-column:auto}.municipality-toolbar{align-items:stretch;flex-direction:column}.municipality-toolbar>span{white-space:normal}.municipality-search{max-width:none}.municipality-grid{grid-template-columns:1fr}.switch-grid{grid-template-columns:repeat(2,1fr)}.panel{padding:29px 20px 22px}.form-actions{padding:16px 20px}.primary-button,.secondary-button{flex:1}.spacer{display:none} }
+@media(max-width:760px){ .steps{padding:16px 8px}.step{gap:0}.step small{display:none}.two-columns,.field-grid{grid-template-columns:1fr}.field-grid .wide{grid-column:auto}.municipality-toolbar{align-items:stretch;flex-direction:column}.municipality-toolbar>span{white-space:normal}.municipality-search{max-width:none}.municipality-grid{grid-template-columns:1fr}.maps-tools{flex-direction:column}.maps-guide{width:100%}.maps-guide-steps{grid-template-columns:1fr}.verify-link{padding-left:4px}.switch-grid{grid-template-columns:repeat(2,1fr)}.panel{padding:29px 20px 22px}.form-actions{padding:16px 20px}.primary-button,.secondary-button{flex:1}.spacer{display:none} }

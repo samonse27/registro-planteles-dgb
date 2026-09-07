@@ -1,7 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { ArrowLeft, ArrowRight, Check, CheckCircle2, ExternalLink, MapPin, Plus, Search, Send, Trash2, X } from "lucide-react";
+import Image from "next/image";
+import { ArrowLeft, ArrowRight, Check, CheckCircle2, ChevronDown, ExternalLink, HelpCircle, MapPin, Plus, Search, Send, Trash2, X } from "lucide-react";
 import { ESTADOS, MUNICIPIOS_POR_ESTADO } from "@/lib/catalogos";
 
 type Plantel = {
@@ -258,15 +259,44 @@ export default function Home() {
                   <label>Latitud <b>*</b><input required aria-invalid={mostrarErrores && !plantel.latitud.trim()} value={plantel.latitud} onChange={(e) => actualizarPlantel(municipioActivo, plantel.id, "latitud", e.target.value)} placeholder="Ej. 19.432608" /><span className="field-error">Falta capturar la latitud.</span></label>
                   <label>Longitud <b>*</b><input required aria-invalid={mostrarErrores && !plantel.longitud.trim()} value={plantel.longitud} onChange={(e) => actualizarPlantel(municipioActivo, plantel.id, "longitud", e.target.value)} placeholder="Ej. -99.133209" /><span className="field-error">Falta capturar la longitud.</span></label>
                   <label>Código Postal <b>*</b><input required inputMode="numeric" maxLength={5} pattern="[0-9]{5}" aria-invalid={mostrarErrores && !/^[0-9]{5}$/.test(plantel.codigoPostal)} value={plantel.codigoPostal} onChange={(e) => actualizarPlantel(municipioActivo, plantel.id, "codigoPostal", e.target.value.replace(/\D/g, "").slice(0, 5))} placeholder="Ej. 06000" /><span className="field-error">Capture un Código Postal de 5 dígitos.</span></label>
-                  <label className="wide maps-field">Enlace de Google Maps <b>*</b>
-                    <span className="field-help">En Google Maps abra la ubicación del plantel, seleccione <strong>Compartir</strong> y después <strong>Copiar vínculo</strong>. Pegue el vínculo aquí; no escriba el domicilio.</span>
-                    <input required type="url" aria-invalid={mostrarErrores && Boolean(errorEnlaceGoogleMaps(plantel.linkGoogleMaps))} value={plantel.linkGoogleMaps} onChange={(e) => actualizarPlantel(municipioActivo, plantel.id, "linkGoogleMaps", e.target.value)} onBlur={(e) => actualizarPlantel(municipioActivo, plantel.id, "linkGoogleMaps", e.target.value.trim())} placeholder="Ej. https://maps.app.goo.gl/..." />
-                    {mostrarErrores && errorEnlaceGoogleMaps(plantel.linkGoogleMaps) && <span className="field-error visible">{errorEnlaceGoogleMaps(plantel.linkGoogleMaps)}</span>}
+                  <div className="wide maps-field">
+                    <label>Enlace de Google Maps <b>*</b>
+                      <span className="field-help">Pegue el vínculo que obtiene al seleccionar <strong>Compartir</strong> en Google Maps; no escriba el domicilio.</span>
+                      <input required type="url" aria-invalid={mostrarErrores && Boolean(errorEnlaceGoogleMaps(plantel.linkGoogleMaps))} value={plantel.linkGoogleMaps} onChange={(e) => actualizarPlantel(municipioActivo, plantel.id, "linkGoogleMaps", e.target.value)} onBlur={(e) => actualizarPlantel(municipioActivo, plantel.id, "linkGoogleMaps", e.target.value.trim())} placeholder="Ej. https://maps.app.goo.gl/..." />
+                      {mostrarErrores && errorEnlaceGoogleMaps(plantel.linkGoogleMaps) && <span className="field-error visible">{errorEnlaceGoogleMaps(plantel.linkGoogleMaps)}</span>}
+                    </label>
                     <div className="maps-tools">
-                      <details className="maps-help"><summary>¿Cómo obtener el enlace?</summary><ol><li>Abra Google Maps y busque el plantel.</li><li>Seleccione <strong>Compartir</strong>.</li><li>Seleccione <strong>Copiar vínculo</strong> y péguelo en este campo.</li></ol></details>
+                      <details className="maps-guide">
+                        <summary>
+                          <span className="maps-guide-icon"><HelpCircle size={21} /></span>
+                          <span><strong>¿Cómo obtener el enlace?</strong><small>Consulte la guía con imágenes</small></span>
+                          <ChevronDown className="maps-guide-chevron" size={20} />
+                        </summary>
+                        <div className="maps-guide-body">
+                          <p className="maps-guide-intro">Siga estos pasos para obtener el vínculo correcto del plantel:</p>
+                          <ol className="maps-guide-steps">
+                            <li>
+                              <span className="step-number">1</span>
+                              <div><h4>Abra Google Maps</h4><p>Ingrese a <a href="https://www.google.com/maps" target="_blank" rel="noopener noreferrer">google.com/maps</a>.</p></div>
+                            </li>
+                            <li>
+                              <span className="step-number">2</span>
+                              <div><h4>Busque el plantel</h4><p>Escriba la dirección o el nombre del plantel en el buscador.</p><Image src="/guia-google-maps-buscar.png" alt="Buscador de Google Maps señalado con una flecha" width={528} height={322} /></div>
+                            </li>
+                            <li>
+                              <span className="step-number">3</span>
+                              <div><h4>Seleccione Compartir</h4><p>En la ficha del plantel, presione el botón <strong>Compartir</strong>.</p><Image src="/guia-google-maps-compartir.png" alt="Botón Compartir en la ficha de un plantel de Google Maps" width={420} height={522} /></div>
+                            </li>
+                            <li>
+                              <span className="step-number">4</span>
+                              <div><h4>Copie y pegue el vínculo</h4><p>Seleccione <strong>Copiar vínculo</strong> y péguelo en el campo de arriba.</p><Image src="/guia-google-maps-copiar.png" alt="Opción Copiar vínculo en Google Maps" width={576} height={466} /></div>
+                            </li>
+                          </ol>
+                        </div>
+                      </details>
                       {!errorEnlaceGoogleMaps(plantel.linkGoogleMaps) && <a className="verify-link" href={plantel.linkGoogleMaps.trim()} target="_blank" rel="noopener noreferrer"><ExternalLink size={15} /> Verificar enlace</a>}
                     </div>
-                  </label>
+                  </div>
                   <label>Aulas didácticas <b>*</b><input required type="number" min="0" aria-invalid={mostrarErrores && plantel.aulasDidacticas === ""} value={plantel.aulasDidacticas} onChange={(e) => actualizarPlantel(municipioActivo, plantel.id, "aulasDidacticas", e.target.value)} placeholder="Ej. 12" /><span className="field-error">Falta indicar la cantidad de aulas didácticas.</span></label>
                   <label>Capacidad por aula <b>*</b><input required type="number" min="0" aria-invalid={mostrarErrores && plantel.capacidadPorAula === ""} value={plantel.capacidadPorAula} onChange={(e) => actualizarPlantel(municipioActivo, plantel.id, "capacidadPorAula", e.target.value)} placeholder="Ej. 30" /><span className="field-error">Falta indicar la capacidad por aula.</span></label>
                   <label>Capacidad instalada <b>*</b><input required type="number" min="0" step="1" aria-invalid={mostrarErrores && plantel.capacidadInstalada === ""} value={plantel.capacidadInstalada} onChange={(e) => actualizarPlantel(municipioActivo, plantel.id, "capacidadInstalada", e.target.value)} placeholder="Ej. 450" /><span className="field-error">Falta indicar la capacidad instalada.</span></label>
