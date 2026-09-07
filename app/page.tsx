@@ -28,6 +28,12 @@ const PASOS = ["Responsable", "Municipios", "Planteles", "Revisión"];
 
 const respuestaSiNo = (valor: boolean | null) => valor === true ? "Sí" : valor === false ? "No" : "Sin respuesta";
 
+const coordenadaValida = (valor: string, minimo: number, maximo: number) => {
+  if (!valor.trim()) return false;
+  const numero = Number(valor);
+  return Number.isFinite(numero) && numero >= minimo && numero <= maximo;
+};
+
 const errorEnlaceGoogleMaps = (valor: string) => {
   const enlace = valor.trim();
   if (!enlace) return "Falta pegar el enlace de Google Maps.";
@@ -98,8 +104,9 @@ export default function Home() {
   }));
 
   const plantelCompleto = (plantel: Plantel) => Boolean(
-    plantel.nombre.trim() && plantel.direccion.trim() && plantel.latitud.trim() &&
-    plantel.longitud.trim() && /^[0-9]{5}$/.test(plantel.codigoPostal) &&
+    plantel.nombre.trim() && plantel.direccion.trim() &&
+    coordenadaValida(plantel.latitud, -90, 90) &&
+    coordenadaValida(plantel.longitud, -180, 180) && /^[0-9]{5}$/.test(plantel.codigoPostal) &&
     !errorEnlaceGoogleMaps(plantel.linkGoogleMaps) && plantel.capacidadInstalada !== "" &&
     plantel.aulasDidacticas !== "" &&
     plantel.capacidadPorAula !== "" && plantel.computadoras !== "" &&
@@ -266,8 +273,8 @@ export default function Home() {
                 <div className="field-grid">
                   <label>Nombre del plantel <b>*</b><input required aria-invalid={mostrarErrores && !plantel.nombre.trim()} value={plantel.nombre} onChange={(e) => actualizarPlantel(municipioActivo, plantel.id, "nombre", e.target.value)} /><span className="field-error">Falta capturar el nombre del plantel.</span></label>
                   <label>Dirección del plantel <b>*</b><input required aria-invalid={mostrarErrores && !plantel.direccion.trim()} value={plantel.direccion} onChange={(e) => actualizarPlantel(municipioActivo, plantel.id, "direccion", e.target.value)} /><span className="field-error">Falta capturar la dirección del plantel.</span></label>
-                  <label>Latitud <b>*</b><input required aria-invalid={mostrarErrores && !plantel.latitud.trim()} value={plantel.latitud} onChange={(e) => actualizarPlantel(municipioActivo, plantel.id, "latitud", e.target.value)} placeholder="Ej. 19.432608" /><span className="field-error">Falta capturar la latitud.</span></label>
-                  <label>Longitud <b>*</b><input required aria-invalid={mostrarErrores && !plantel.longitud.trim()} value={plantel.longitud} onChange={(e) => actualizarPlantel(municipioActivo, plantel.id, "longitud", e.target.value)} placeholder="Ej. -99.133209" /><span className="field-error">Falta capturar la longitud.</span></label>
+                  <label>Latitud <b>*</b><input required type="number" min={-90} max={90} step="any" aria-invalid={mostrarErrores && !coordenadaValida(plantel.latitud, -90, 90)} value={plantel.latitud} onChange={(e) => actualizarPlantel(municipioActivo, plantel.id, "latitud", e.target.value)} placeholder="Ej. 19.432608" /><span className="field-error">Capture una latitud entre -90 y 90.</span></label>
+                  <label>Longitud <b>*</b><input required type="number" min={-180} max={180} step="any" aria-invalid={mostrarErrores && !coordenadaValida(plantel.longitud, -180, 180)} value={plantel.longitud} onChange={(e) => actualizarPlantel(municipioActivo, plantel.id, "longitud", e.target.value)} placeholder="Ej. -99.133209" /><span className="field-error">Capture una longitud entre -180 y 180.</span></label>
                   <label>Código Postal <b>*</b><input required inputMode="numeric" maxLength={5} pattern="[0-9]{5}" aria-invalid={mostrarErrores && !/^[0-9]{5}$/.test(plantel.codigoPostal)} value={plantel.codigoPostal} onChange={(e) => actualizarPlantel(municipioActivo, plantel.id, "codigoPostal", e.target.value.replace(/\D/g, "").slice(0, 5))} placeholder="Ej. 06000" /><span className="field-error">Capture un Código Postal de 5 dígitos.</span></label>
                   <div className="wide maps-field">
                     <label>Enlace de Google Maps <b>*</b>
