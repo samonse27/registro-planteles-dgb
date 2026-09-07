@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Registro de planteles DGB",
-  description: "Formulario para registrar planteles por estado y municipio.",
+  title: "Registro de Planteles CECATIS",
+  description: "Formulario para registrar planteles CECATIS por estado y municipio.",
   other: {
     "codex-preview": "development",
   },
