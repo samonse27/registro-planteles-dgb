@@ -67,6 +67,14 @@ input:focus,select:focus { border-color:#a57f2c; box-shadow:0 0 0 3px rgba(165,1
 .plant-card h3 { margin:0; font-size:1.1rem; color:#6d1935; }
 .icon-danger { border:0; background:#fff0f0; color:#b42318; border-radius:9px; padding:8px; cursor:pointer; }
 .field-grid .wide { grid-column:1/-1; }
+.field-help { color:#765966; font-size:.82rem; font-weight:500; line-height:1.5; }
+.field-help strong { color:#56303e; }
+.maps-tools { display:flex; align-items:flex-start; justify-content:space-between; gap:14px; flex-wrap:wrap; }
+.maps-help { color:#7b193b; font-size:.82rem; font-weight:700; }
+.maps-help summary { cursor:pointer; width:max-content; }
+.maps-help ol { margin:9px 0 0; padding-left:20px; color:#765966; font-weight:500; line-height:1.6; }
+.verify-link { display:inline-flex; align-items:center; gap:6px; color:#7b193b; font-size:.82rem; font-weight:750; text-decoration:none; }
+.verify-link:hover { text-decoration:underline; }
 .switch-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:20px; }
 .boolean-field { min-width:0; margin:0; border:1px solid #e5cfd6; border-radius:12px; padding:10px 12px 12px; }
 .boolean-field legend { padding:0 4px; color:#56303e; font-size:.9rem; font-weight:700; }
